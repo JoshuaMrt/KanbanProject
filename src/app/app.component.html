@@ -1,0 +1,413 @@
+<!-- <div class="kanban-board">
+  <div class="kanban-column">
+      <h2>Backlog</h2>
+    
+
+      <button (click)="showNewCard = true">New Item</button>
+
+      <div *ngIf="showNewCard" (click)="onOutsideClick($event)">
+          <div class="card">
+              <textarea [(ngModel)]="newCardDescription" placeholder="New card description" (keydown.enter)="addCard()" class="fixed-textarea"></textarea>
+          </div>
+      </div>
+
+      <div class="kanban-card" *ngFor="let card of backlogCards" cdkDrag>
+          <div class="menuuser">
+              <h4>{{ card.number }}</h4>
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                  <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="addTask(card)">
+                      <mat-icon style="color: green;">add</mat-icon>
+                      <span>Add Task</span>
+                  </button>
+                  <button mat-menu-item (click)="addBug(card)">
+                      <mat-icon style="color: rgb(212, 4, 4);">bug_report</mat-icon>
+                      <span>Add Bug</span>
+                  </button>
+                  <button mat-menu-item (click)="toggleEditing(card)">
+                      <mat-icon style="color: rgb(0, 99, 248);">edit</mat-icon>
+                      <span>Edit</span>
+                  </button>
+                  <button mat-menu-item (click)="deleteCard(card)">
+                      <mat-icon style="color: rgb(212, 4, 4)">close</mat-icon>
+                      <span>Delete</span>
+                  </button>
+              </mat-menu>
+          </div>
+          <p *ngIf="!card.isEditing">{{ card.description }}</p>
+          <textarea *ngIf="card.isEditing" [(ngModel)]="card.description" (keydown.enter)="toggleEditing(card)"></textarea>
+          <div>
+              <select (change)="assignTask(card, $event)">
+                  <option value="">Assign Task</option>
+                  <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+              </select>
+          </div>
+          <div class="state-dropdown">
+              <label>State</label>
+              <div class="drop-and-circle">
+                  <div [ngClass]="card.state === 'New' ? 'gray' : card.state === 'Active' ? 'blue' : card.state === 'Resolved' ? 'orange' : 'green'"></div>
+                  <select [(ngModel)]="card.state" style="border: gray 1px solid;">
+                      <option value="New">New</option>
+                      <option value="Active">Active</option>
+                      <option value="Resolved">Resolved</option>
+                      <option value="Closed">Closed</option>
+                  </select>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="kanban-column" cdkDropList (cdkDropListDropped)="drop($event)">
+      <h2>To Do</h2>
+      <div class="kanban-card" *ngFor="let card of todoCards" cdkDrag>{{ card.number }}</div>
+  </div>
+
+  <div class="kanban-column" cdkDropList (cdkDropListDropped)="drop($event)">
+      <h2>In Progress</h2>
+      <div class="kanban-card" *ngFor="let card of inProgressCards" cdkDrag>{{ card.number }}</div>
+  </div>
+
+  <div class="kanban-column" cdkDropList (cdkDropListDropped)="drop($event)">
+      <h2>Ready for Testing</h2>
+      <div class="kanban-card" *ngFor="let card of readyCards" cdkDrag>{{ card.number }}</div>
+  </div>
+
+  <div class="kanban-column" cdkDropList (cdkDropListDropped)="drop($event)">
+      <h2>Done</h2>
+      <div class="kanban-card" *ngFor="let card of doneCards" cdkDrag>{{ card.number }}</div>
+  </div>
+</div> -->
+
+<div class="all-container">
+  <div class="example-container">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+          <h2>Backlog</h2>
+      </div>
+
+      <div
+          cdkDropList
+          #backlogList="cdkDropList"
+          [cdkDropListData]="backlogCards"
+          [cdkDropListConnectedTo]="[doneList,todoList,inprogressList,readyforTestingList,doneList]"
+          class="example-list"
+          (cdkDropListDropped)="drop($event, 'backlog')">
+          <button (click)="showNewCard = true">New Item</button>
+
+          <div *ngIf="showNewCard" (click)="onOutsideClick($event)">
+              <div class="card">
+                  <textarea [(ngModel)]="newCardDescription" placeholder="New card description" (keydown.enter)="addCard()" class="fixed-textarea"></textarea>
+              </div>
+          </div>
+
+          <div class="example-box" *ngFor="let card of backlogCards" cdkDrag>
+              <div class="menuuser">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                      <h4>{{ getCardNumber(card.number) }}</h4>
+                      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                          <mat-icon>more_vert</mat-icon>
+                      </button>
+                  </div>
+
+                  <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="addTask(card)">
+                          <mat-icon style="color: green;">add</mat-icon>
+                          <span>Add Task</span>
+                      </button>
+                      <button mat-menu-item (click)="addBug(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">bug_report</mat-icon>
+                          <span>Add Bug</span>
+                      </button>
+                      <button mat-menu-item (click)="toggleEditing(card)">
+                          <mat-icon style="color: rgb(0, 99, 248);">edit</mat-icon>
+                          <span>Edit</span>
+                      </button>
+                      <button mat-menu-item (click)="deleteCard(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">close</mat-icon>
+                          <span>Delete</span>
+                      </button>
+                  </mat-menu>
+              </div>
+              <p *ngIf="!card.isEditing">{{ card.description }}</p>
+              <textarea *ngIf="card.isEditing" [(ngModel)]="card.description" (keydown.enter)="toggleEditing(card)"></textarea>
+              <div>
+                  <select (change)="assignTask(card, $event)">
+                      <option value="">Assign Task</option>
+                      <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+                  </select>
+              </div>
+              <div class="state-dropdown">
+                  <label>State</label>
+                  <div class="drop-and-circle">
+                      <div [ngClass]="card.state === 'New' ? 'gray' : card.state === 'Active' ? 'blue' : card.state === 'Resolved' ? 'orange' : 'green'"></div>
+                      <select [(ngModel)]="card.state" style="border: gray 1px solid;">
+                          <option value="New">New</option>
+                          <option value="Active">Active</option>
+                          <option value="Resolved">Resolved</option>
+                          <option value="Closed">Closed</option>
+                      </select>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- To do -->
+
+  <div class="example-container">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+          <h2>To do</h2>
+          <h2>{{ progressCount }}/30</h2>
+      </div>
+
+      <div
+          cdkDropList
+          #todoList="cdkDropList"
+          [cdkDropListData]="todoCards"
+          [cdkDropListConnectedTo]="[doneList, backlogList, inprogressList, readyforTestingList,doneList]"
+          class="example-list"
+          (cdkDropListDropped)="drop($event, 'todo')">
+          <!-- Use the same markup as in the Backlog section to display the whole content of the cards -->
+          <div class="example-box" *ngFor="let card of todoCards" cdkDrag>
+              <div class="menuuser">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                      <h4>{{ getCardNumber(card.number) }}</h4>
+                      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                          <mat-icon>more_vert</mat-icon>
+                      </button>
+                  </div>
+                  <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="addTask(card)">
+                          <mat-icon style="color: green;">add</mat-icon>
+                          <span>Add Task</span>
+                      </button>
+                      <button mat-menu-item (click)="addBug(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">bug_report</mat-icon>
+                          <span>Add Bug</span>
+                      </button>
+                      <button mat-menu-item (click)="toggleEditing(card)">
+                          <mat-icon style="color: rgb(0, 99, 248);">edit</mat-icon>
+                          <span>Edit</span>
+                      </button>
+                      <button mat-menu-item (click)="deleteCard(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">close</mat-icon>
+                          <span>Delete</span>
+                      </button>
+                  </mat-menu>
+              </div>
+              <p *ngIf="!card.isEditing">{{ card.description }}</p>
+              <textarea *ngIf="card.isEditing" [(ngModel)]="card.description" (keydown.enter)="toggleEditing(card)"></textarea>
+              <div>
+                  <select (change)="assignTask(card, $event)">
+                      <option value="">Assign Task</option>
+                      <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+                  </select>
+              </div>
+              <div class="state-dropdown">
+                  <label>State</label>
+                  <div class="drop-and-circle">
+                      <div [ngClass]="card.state === 'New' ? 'gray' : card.state === 'Active' ? 'blue' : card.state === 'Resolved' ? 'orange' : 'green'"></div>
+                      <select [(ngModel)]="card.state">
+                          <option value="New">New</option>
+                          <option value="Active">Active</option>
+                          <option value="Resolved">Resolved</option>
+                          <option value="Closed">Closed</option>
+                      </select>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- In Progress -->
+
+  <div class="example-container">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+          <h2>In Progress</h2>
+          <h2>{{ progressCountInProgress }}/5</h2>
+      </div>
+
+      <div
+          cdkDropList
+          #inprogressList="cdkDropList"
+          [cdkDropListData]="inProgressCards"
+          [cdkDropListConnectedTo]="[doneList,todoList,backlogList,readyforTestingList,doneList]"
+          class="example-list"
+          (cdkDropListDropped)="drop($event, 'inprogress')">
+          <!-- this is card -->
+          <div class="example-box" *ngFor="let card of inProgressCards" cdkDrag>
+              <div class="menuuser">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                      <h4>{{ getCardNumber(card.number) }}</h4>
+                      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                          <mat-icon>more_vert</mat-icon>
+                      </button>
+                  </div>
+                  <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="addTask(card)">
+                          <mat-icon style="color: green;">add</mat-icon>
+                          <span>Add Task</span>
+                      </button>
+                      <button mat-menu-item (click)="addBug(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">bug_report</mat-icon>
+                          <span>Add Bug</span>
+                      </button>
+                      <button mat-menu-item (click)="toggleEditing(card)">
+                          <mat-icon style="color: rgb(0, 99, 248);">edit</mat-icon>
+                          <span>Edit</span>
+                      </button>
+                      <button mat-menu-item (click)="deleteCard(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">close</mat-icon>
+                          <span>Delete</span>
+                      </button>
+                  </mat-menu>
+              </div>
+              <p *ngIf="!card.isEditing">{{ card.description }}</p>
+              <textarea *ngIf="card.isEditing" [(ngModel)]="card.description" (keydown.enter)="toggleEditing(card)"></textarea>
+              <div>
+                  <select (change)="assignTask(card, $event)">
+                      <option value="">Assign Task</option>
+                      <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+                  </select>
+              </div>
+              <div class="state-dropdown">
+                  <label>State</label>
+                  <div class="drop-and-circle">
+                      <div [ngClass]="card.state === 'New' ? 'gray' : card.state === 'Active' ? 'blue' : card.state === 'Resolved' ? 'orange' : 'green'"></div>
+                      <select [(ngModel)]="card.state" style="border: gray 1px solid;">
+                          <option value="New">New</option>
+                          <option value="Active">Active</option>
+                          <option value="Resolved">Resolved</option>
+                          <option value="Closed">Closed</option>
+                      </select>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="example-container">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+          <h2>Ready For Testing</h2>
+          <h2>{{ progressCountReadyForTesting }}/2</h2>
+      </div>
+
+      <div
+          cdkDropList
+          #readyforTestingList="cdkDropList"
+          [cdkDropListData]="readyCards"
+          [cdkDropListConnectedTo]="[todoList,backlogList,inprogressList,readyforTestingList,doneList]"
+          class="example-list"
+          (cdkDropListDropped)="drop($event, 'readyfortesting')">
+          <!-- <div class="example-box" *ngFor="let card of readyCards" cdkDrag></div> -->
+          <div class="example-box" *ngFor="let card of readyCards" cdkDrag>
+              <div class="menuuser">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                      <h4>{{ getCardNumber(card.number) }}</h4>
+                      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                          <mat-icon>more_vert</mat-icon>
+                      </button>
+                  </div>
+                  <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="addTask(card)">
+                          <mat-icon style="color: green;">add</mat-icon>
+                          <span>Add Task</span>
+                      </button>
+                      <button mat-menu-item (click)="addBug(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">bug_report</mat-icon>
+                          <span>Add Bug</span>
+                      </button>
+                      <button mat-menu-item (click)="toggleEditing(card)">
+                          <mat-icon style="color: rgb(0, 99, 248);">edit</mat-icon>
+                          <span>Edit</span>
+                      </button>
+                      <button mat-menu-item (click)="deleteCard(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">close</mat-icon>
+                          <span>Delete</span>
+                      </button>
+                  </mat-menu>
+              </div>
+              <p *ngIf="!card.isEditing">{{ card.description }}</p>
+              <textarea *ngIf="card.isEditing" [(ngModel)]="card.description" (keydown.enter)="toggleEditing(card)"></textarea>
+              <div>
+                  <select (change)="assignTask(card, $event)">
+                      <option value="">Assign Task</option>
+                      <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+                  </select>
+              </div>
+              <div class="state-dropdown">
+                  <label>State</label>
+                  <div class="drop-and-circle">
+                      <div [ngClass]="card.state === 'New' ? 'gray' : card.state === 'Active' ? 'blue' : card.state === 'Resolved' ? 'orange' : 'green'"></div>
+                      <select [(ngModel)]="card.state" style="border: gray 1px solid;">
+                          <option value="New">New</option>
+                          <option value="Active">Active</option>
+                          <option value="Resolved">Resolved</option>
+                          <option value="Closed">Closed</option>
+                      </select>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="example-container">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+          <h2>Done</h2>
+          <h2>{{ progressCountDone }}</h2>
+      </div>
+
+      <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="doneCards" [cdkDropListConnectedTo]="[todoList,backlogList,inprogressList,readyforTestingList]" class="example-list" (cdkDropListDropped)="drop($event, 'done')">
+          <!-- <div class="example-box" *ngFor="let card of doneCards" cdkDrag></div> -->
+          <div class="example-box" *ngFor="let card of doneCards" cdkDrag>
+              <div class="menuuser">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                      <h4>{{ getCardNumber(card.number) }}</h4>
+                      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                          <mat-icon>more_vert</mat-icon>
+                      </button>
+                  </div>
+                  <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="addTask(card)">
+                          <mat-icon style="color: green;">add</mat-icon>
+                          <span>Add Task</span>
+                      </button>
+                      <button mat-menu-item (click)="addBug(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">bug_report</mat-icon>
+                          <span>Add Bug</span>
+                      </button>
+                      <button mat-menu-item (click)="toggleEditing(card)">
+                          <mat-icon style="color: rgb(0, 99, 248);">edit</mat-icon>
+                          <span>Edit</span>
+                      </button>
+                      <button mat-menu-item (click)="deleteCard(card)">
+                          <mat-icon style="color: rgb(212, 4, 4);">close</mat-icon>
+                          <span>Delete</span>
+                      </button>
+                  </mat-menu>
+              </div>
+              <p *ngIf="!card.isEditing">{{ card.description }}</p>
+              <textarea *ngIf="card.isEditing" [(ngModel)]="card.description" (keydown.enter)="toggleEditing(card)"></textarea>
+              <div>
+                  <select (change)="assignTask(card, $event)">
+                      <option value="">Assign Task</option>
+                      <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+                  </select>
+              </div>
+              <div class="state-dropdown">
+                  <label>State</label>
+                  <div class="drop-and-circle">
+                      <div [ngClass]="card.state === 'New' ? 'gray' : card.state === 'Active' ? 'blue' : card.state === 'Resolved' ? 'orange' : 'green'"></div>
+                      <select [(ngModel)]="card.state" style="border: gray 1px solid;">
+                          <option value="New">New</option>
+                          <option value="Active">Active</option>
+                          <option value="Resolved">Resolved</option>
+                          <option value="Closed">Closed</option>
+                      </select>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

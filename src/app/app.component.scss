@@ -1,0 +1,155 @@
+.kanban-column {
+  flex: 1;
+  margin: 10px;
+  background-color: #F4F4F4 !important;
+}
+::ng-deep .mat-typography h2 { 
+  text-align: center !important;
+}
+.kanban-card {
+  width: 80%;
+  background-color: #F6F6FF;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border: rgb(187, 187, 187) 1px solid;
+  border-left: rgb(46, 65, 207) 4px solid;
+  border-radius: 10px;
+}
+.card {
+  margin-top: 10px;
+  border: rgb(151, 143, 143) 0.5px solid;
+  border-left: rgb(67, 67, 219) 4px solid;
+  padding: 10px;
+  margin-right: 100px;
+}
+
+.fixed-textarea {
+  height: 40px;
+  width: 200px;
+  resize: none;
+}
+
+.kanban-card h4 {
+  margin: 0;
+}
+
+// .kanban-card p {
+//   margin-top: 5px;
+//   margin-bottom: 10px;
+// }
+
+button {
+  margin-right: 5px;
+}
+
+.state-dropdown {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.drop-and-circle {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.gray {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: gray;
+}
+
+.blue {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: rgb(67, 67, 219);
+}
+
+.orange {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: orange;
+}
+
+.green {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: green;
+}
+
+// .menuuser {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+// }
+
+
+
+.all-container
+{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.example-container {
+  width: 250px;
+  max-width: 100%;
+  margin: 0 25px 25px 0;
+  display: inline-block;
+  vertical-align: top;
+  
+}
+
+.example-list {
+  border: solid 1px #ccc;
+  min-height: 600px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+  
+}
+
+.example-box {
+  padding: 20px 10px;
+  border-bottom: solid 1px #ccc;
+  border-left: rgb(46, 65, 207) 4px solid;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+  border-left: rgb(46, 65, 207) 4px solid;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
